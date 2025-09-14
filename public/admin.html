@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>RSVP Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/styles.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>RSVP Übersicht</h1>
+
+    <div class="form-grid" style="margin: 10px 0 14px;">
+      <div>
+        <label for="adminkey">Admin-Schlüssel</label>
+        <input id="adminkey" type="text" placeholder="Admin-Key eingeben">
+        <div class="hint">Wird lokal gespeichert.</div>
+      </div>
+      <div>
+        <button id="saveKey" class="btn">Speichern</button>
+        <button id="refresh" class="btn primary">Aktualisieren</button>
+        <a id="csv" class="btn" href="#" target="_blank" rel="noopener">CSV Export</a>
+      </div>
+    </div>
+
+    <div id="stats" class="badge">Lade…</div>
+
+    <div style="margin-top:12px; overflow:auto;">
+      <table id="table" style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left; border-bottom:1px solid #eee; padding:8px;">Zeit</th>
+            <th style="text-align:left; border-bottom:1px solid #eee; padding:8px;">Name</th>
+            <th style="text-align:left; border-bottom:1px solid #eee; padding:8px;">Begleitung</th>
+            <th style="text-align:left; border-bottom:1px solid #eee; padding:8px;">Kinder</th>
+            <th style="text-align:left; border-bottom:1px solid #eee; padding:8px;">Teilnahme</th>
+            <th style="text-align:left; border-bottom:1px solid #eee; padding:8px;">Notiz</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="/admin.js" defer></script>
+</body>
+</html>
