@@ -18,12 +18,23 @@ function showSlide(i) {
   nextBtn.textContent = i === slides.length - 1 ? "Zum Formular" : "Weiter →";
 }
 envelope?.addEventListener("click", () => {
+  // Doppelklick verhindern
+  if (envelope.classList.contains("opened")) return;
+
+  // Animation starten
   envelope.classList.add("opened");
-  openLabel.classList.add("hidden");
-  document.querySelector(".envelope-wrap").classList.add("hidden");
-  slider.classList.remove("hidden");
-  showSlide(0);
+  openLabel?.classList.add("hidden"); // optional, s. CSS-Fallback unten
+
+  // Warten bis Animation fertig ist (~0.8–0.9s), dann Slider zeigen
+  // (Dauer passt zu den CSS-Transitions/Keyframes)
+  setTimeout(() => {
+    slider.classList.remove("hidden");
+    showSlide(0);
+    // jetzt erst das Kuvert ausblenden
+    document.querySelector(".envelope-wrap")?.classList.add("hidden");
+  }, 900);
 });
+
 
 prevBtn?.addEventListener("click", () => {
   if (idx > 0) { idx--; showSlide(idx); }
