@@ -140,3 +140,128 @@ input[type="text"], input[type="number"], textarea, select {
 }
 
 .footer-note { text-align: center; color: var(--muted); font-size: 12px; margin: 18px 0 12px; }
+
+/* 3D-Stage */
+.envelope-wrap { 
+  display: grid; 
+  place-items: center; 
+  margin-top: 24px; 
+  perspective: 1000px; 
+}
+
+.envelope {
+  width: 360px;
+  height: 240px;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform .4s ease;
+}
+.envelope:hover { transform: translateY(-2px); }
+
+.open-label {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-size: 18px; color: var(--muted);
+  z-index: 5;
+  user-select: none;
+}
+
+/* Umschlag-Körper (Tasche) */
+.pocket {
+  position: absolute; inset: 0;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.14);
+  z-index: 1;
+}
+
+/* Zierkanten links/rechts (leichte Schattenoptik) */
+.pocket::before,
+.pocket::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; width: 48%;
+  background: linear-gradient(to right, rgba(0,0,0,0.02), transparent);
+  pointer-events: none;
+}
+.pocket::before { left: 0; border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
+.pocket::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0,0,0,0.02), transparent);
+  border-top-right-radius: 6px; border-bottom-right-radius: 6px;
+}
+
+/* Klappe (Dreieck), klappt nach hinten auf */
+.flap {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 56%;
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform .8s cubic-bezier(.2,.6,.15,1);
+  z-index: 4;
+  /* Dreiecksform */
+  background: #fff;
+  border: 1px solid #eee;
+  border-bottom: none;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  box-shadow: 0 8px 18px rgba(0,0,0,.06);
+}
+
+/* Deko-Falzlinie auf der Klappe */
+.flap::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 18%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #e9e1d6, transparent);
+  opacity: .8;
+}
+
+/* Brief (zieht nach oben raus) */
+.letter {
+  position: absolute;
+  left: 14px; right: 14px;
+  bottom: 10px; top: 28%;
+  background: #fffdfa;
+  border: 1px solid #eee3cf;
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.07);
+  transform: translateY(24%);
+  transition: transform .9s cubic-bezier(.2,.6,.15,1) .25s, box-shadow .3s ease .25s;
+  z-index: 2;
+}
+
+/* kleine Zierlinie auf dem Brief */
+.seal-line {
+  position: absolute; left: 0; right: 0; top: 24px;
+  height: 2px; background: linear-gradient(to right, transparent, #f0e6d8, transparent);
+}
+
+/* Öffnen-Zustand */
+.envelope.opened .flap {
+  transform: rotateX(180deg);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.envelope.opened .letter {
+  transform: translateY(-26%);
+  box-shadow: 0 10px 26px rgba(0,0,0,.10);
+}
+
+/* sanftes „Pop“ des ganzen Kuverts beim Öffnen */
+.envelope.opened { animation: env-pop .45s ease both; }
+@keyframes env-pop {
+  0% { transform: scale(1); }
+  60% { transform: scale(1.02); }
+  100% { transform: scale(1.004); }
+}
+
+/* Weniger Bewegung für Nutzer mit reduzierten Animationen */
+@media (prefers-reduced-motion: reduce) {
+  .envelope, .flap, .letter { transition: none !important; animation: none !important; }
+}
+
