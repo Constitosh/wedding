@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Hochzeit – Einladung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/styles.css" rel="stylesheet">
+  <meta name="description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💌 Unsere Hochzeit</h1>
+      <div class="hint">Klicke auf das Kuvert, um die Einladung zu öffnen.</div>
+    </div>
+
+    <!-- Kuvert -->
+    <div class="envelope-wrap">
+      <div id="envelope" class="envelope" role="button" aria-label="Einladung öffnen" tabindex="0">
+        <div id="open-label" class="open-label">Kuvert öffnen</div>
+      </div>
+    </div>
+
+    <!-- Slider -->
+    <div id="slider" class="slider hidden" aria-live="polite">
+      <!-- Postkarten als Bilder (ersetze die Pfade in /public/assets/) -->
+      <div class="slide active"><img src="/assets/invite1.jpg" alt="Einladung – Seite 1"></div>
+      <div class="slide"><img src="/assets/invite2.jpg" alt="Einladung – Seite 2"></div>
+      <div class="slide"><img src="/assets/invite3.jpg" alt="Einladung – Seite 3"></div>
+      <!-- Optional: vierte Seite -->
+      <!-- <div class="slide"><img src="/assets/invite4.jpg" alt="Einladung – Seite 4"></div> -->
+
+      <div class="slider-controls">
+        <button id="prev" class="btn" disabled>← Zurück</button>
+        <span id="step-badge" class="badge">Seite 1 von 3</span>
+        <button id="next" class="btn primary">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- Formular -->
+    <div id="rsvp-form-card" class="slider form-card hidden">
+      <h2>RSVP</h2>
+      <p class="hint">Bitte fülle das Formular aus. Du kannst Begleitpersonen und Kinder angeben.</p>
+      <form id="rsvp-form" class="form-grid">
+        <div>
+          <label for="name">Dein Name *</label>
+          <input id="name" name="name" type="text" required placeholder="Vor- und Nachname">
+        </div>
+
+        <div>
+          <label for="guests">Begleitpersonen (Namen, kommasepariert)</label>
+          <input id="guests" name="guests" type="text" placeholder="z.B. Maria Muster, Max Muster">
+        </div>
+
+        <div>
+          <label for="kidsCount">Kinder (Anzahl)</label>
+          <input id="kidsCount" name="kidsCount" type="number" min="0" step="1" placeholder="0">
+        </div>
+
+        <div>
+          <label for="attendance">Teilnahme *</label>
+          <select id="attendance" name="attendance" required>
+            <option value="" selected disabled>Bitte wählen…</option>
+            <option value="wir_kommen">Wir kommen</option>
+            <option value="wir_kommen_nicht">Wir kommen nicht</option>
+            <option value="wir_kommen_am_freitag">Wir kommen am Freitag</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="notes">Anmerkungen (optional)</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Allergien, Fragen, Besonderheiten …"></textarea>
+        </div>
+
+        <div>
+          <button class="btn primary" type="submit">Senden</button>
+        </div>
+
+        <div id="status" class="hint" aria-live="polite"></div>
+      </form>
+      <div class="footer-note">Danke für deine Rückmeldung! 💍</div>
+    </div>
+  </div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
