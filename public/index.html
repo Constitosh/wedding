@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title>Hochzeit – Einladung</title>
+  <title>It's about US</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="/styles.css" rel="stylesheet">
   <meta name="description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
@@ -10,8 +10,8 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>💌 Unsere Hochzeit</h1>
-      <div class="hint">Klicke auf das Kuvert, um die Einladung zu öffnen.</div>
+      <h1>💌 It's about US</h1>
+      <div class="hint">Ursula & Sylvester heiraten. Klicke auf das Kuvert um deine Einladung zu öffnen.</div>
     </div>
 
     <!-- Kuvert -->
@@ -24,9 +24,9 @@
     <!-- Slider -->
     <div id="slider" class="slider hidden" aria-live="polite">
       <!-- Postkarten als Bilder (ersetze die Pfade in /public/assets/) -->
-      <div class="slide active"><img src="/assets/invite1.jpg" alt="Einladung – Seite 1"></div>
-      <div class="slide"><img src="/assets/invite2.jpg" alt="Einladung – Seite 2"></div>
-      <div class="slide"><img src="/assets/invite3.jpg" alt="Einladung – Seite 3"></div>
+      <div class="slide active"><img src="https://savethedate.thefakerug.com/wedding/1.png" alt="Einladung – Seite 1"></div>
+      <div class="slide"><img src="https://savethedate.thefakerug.com/wedding/2.png" alt="Einladung – Seite 2"></div>
+      <div class="slide"><img src="https://savethedate.thefakerug.com/wedding/3.png" alt="Einladung – Seite 3"></div>
       <!-- Optional: vierte Seite -->
       <!-- <div class="slide"><img src="/assets/invite4.jpg" alt="Einladung – Seite 4"></div> -->
 
@@ -39,8 +39,8 @@
 
     <!-- Formular -->
     <div id="rsvp-form-card" class="slider form-card hidden">
-      <h2>RSVP</h2>
-      <p class="hint">Bitte fülle das Formular aus. Du kannst Begleitpersonen und Kinder angeben.</p>
+      <h2>Um deine Antwort wird gebeten.</h2>
+      <p class="hint">Bitte fülle das Formular aus und gib an, wen du mitbringst</p>
       <form id="rsvp-form" class="form-grid">
         <div>
           <label for="name">Dein Name *</label>
@@ -48,7 +48,7 @@
         </div>
 
         <div>
-          <label for="guests">Begleitpersonen (Namen, kommasepariert)</label>
+          <label for="guests">Begleitperson</label>
           <input id="guests" name="guests" type="text" placeholder="z.B. Maria Muster, Max Muster">
         </div>
 
@@ -60,16 +60,16 @@
         <div>
           <label for="attendance">Teilnahme *</label>
           <select id="attendance" name="attendance" required>
-            <option value="" selected disabled>Bitte wählen…</option>
-            <option value="wir_kommen">Wir kommen</option>
-            <option value="wir_kommen_nicht">Wir kommen nicht</option>
-            <option value="wir_kommen_am_freitag">Wir kommen am Freitag</option>
+            <option value="" selected disabled>Bitte wähle…</option>
+            <option value="wir_kommen">Wir kommen zur hochzeit</option>
+            <option value="wir_kommen_nicht">Wir kommen schon am Freitag</option>
+            <option value="wir_kommen_am_freitag">Leider können wir nicht kommen</option>
           </select>
         </div>
 
         <div>
           <label for="notes">Anmerkungen (optional)</label>
-          <textarea id="notes" name="notes" rows="3" placeholder="Allergien, Fragen, Besonderheiten …"></textarea>
+          <textarea id="notes" name="notes" rows="3" placeholder="Fragen, Besonderheiten …"></textarea>
         </div>
 
         <div>
