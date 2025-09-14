@@ -174,3 +174,4 @@ input[type="text"],input[type="number"],textarea,select{
 @media (prefers-reduced-motion:reduce){
   .envelope, .flap, .letter, .envelope::after{transition:none!important;animation:none!important}
 }
+.envelope.opened .open-label { display: none !important; }
