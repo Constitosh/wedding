@@ -1,30 +1,16 @@
-/* ============ Basis / Theme ============ */
+/* ===== Theme / Base ===== */
 :root{
-  --bg:#faf7f2;
-  --ink:#2b2b2b;
-  --accent:#b08d57;
-  --card:#fff;
-  --muted:#7a7a7a;
+  --bg:#faf7f2; --ink:#2b2b2b; --accent:#b08d57; --card:#fff; --muted:#7a7a7a;
 }
-
 *{box-sizing:border-box}
 html,body{height:100%}
-body{
-  margin:0;
-  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans";
-  color:var(--ink);
-  background:var(--bg);
-}
+body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans";color:var(--ink);background:var(--bg)}
 .container{max-width:720px;margin:0 auto;padding:24px}
 .header{text-align:center;margin:24px 0 12px;letter-spacing:.03em}
 .hidden{display:none!important}
 
-/* ============ Kuvert mit Aufreiß-Effekt ============ */
-.envelope-wrap{
-  display:grid;place-items:center;margin-top:24px;
-  perspective:1000px;
-}
-
+/* ===== Envelope ===== */
+.envelope-wrap{display:grid;place-items:center;margin-top:24px;perspective:1000px}
 .envelope{
   width:360px;height:240px;position:relative;cursor:pointer;
   transform-style:preserve-3d;transition:transform .35s ease;
@@ -32,146 +18,116 @@ body{
 .envelope:hover{transform:translateY(-2px)}
 .open-label{
   position:absolute;inset:0;display:grid;place-items:center;
-  font-size:18px;color:var(--muted);z-index:10;user-select:none
+  font-size:18px;color:var(--muted);z-index:20;user-select:none
 }
+.envelope.opened .open-label{display:none!important}
 
 /* Tasche */
 .pocket{
-  position:absolute;inset:0;background:#fff;border:1px solid #eee;border-radius:6px;
+  position:absolute;inset:0;background:#fff;border:1px solid #eee;border-radius:8px;
   box-shadow:0 10px 30px rgba(0,0,0,.14);z-index:1;
 }
 
-/* Klappe (dreieck) – klappt nach hinten */
+/* Klappe (dreieck) */
 .flap{
   position:absolute;left:0;right:0;top:0;height:56%;
   transform-origin:top center;transform:rotateX(0deg);
-  transition:transform .7s cubic-bezier(.2,.6,.15,1);
+  transition:transform .65s cubic-bezier(.2,.6,.15,1);
   z-index:6;
-  background:#fff;border:1px solid #eee;border-bottom:none;border-top-left-radius:6px;border-top-right-radius:6px;
+  background:#fff;border:1px solid #eee;border-bottom:none;border-top-left-radius:8px;border-top-right-radius:8px;
   clip-path:polygon(50% 0%,100% 100%,0% 100%);
   box-shadow:0 8px 18px rgba(0,0,0,.06);
 }
-/* feine Falzlinie */
-.flap::after{
+.flap::after{ /* Falzlinie */
   content:"";position:absolute;left:12%;right:12%;bottom:18%;
   height:2px;background:linear-gradient(to right,transparent,#e9e1d6,transparent);opacity:.85
 }
 
-/* Brief (fährt nach oben raus) */
+/* Brief */
 .letter{
   position:absolute;left:14px;right:14px;bottom:10px;top:28%;
-  background:#fffdfa;border:1px solid #eee3cf;border-radius:4px;
+  background:#fffdfa;border:1px solid #eee3cf;border-radius:6px;
   box-shadow:0 6px 16px rgba(0,0,0,.07);
   transform:translateY(24%);
-  transition:transform .9s cubic-bezier(.2,.6,.15,1) .22s, box-shadow .3s ease .22s;
+  transition:transform .9s cubic-bezier(.2,.6,.15,1) .18s, box-shadow .3s ease .18s;
   z-index:2;
 }
 .seal-line{position:absolute;left:0;right:0;top:24px;height:2px;background:linear-gradient(to right,transparent,#f0e6d8,transparent)}
 
-/* --- Aufreiß-Streifen (gezackte Kante) ---
-   Wir zeichnen einen schmalen Papierstreifen mit gezackter Unterkante via mask.
-   Er "wächst" von links nach rechts, um das Aufreißen zu simulieren. */
-.envelope::after{
-  content:"";position:absolute;left:14px;right:14px;top:calc(28% - 14px);height:32px;
-  background:#fff;z-index:8;pointer-events:none;
-  /* leichte Papier-Schattenkante */
-  box-shadow:0 2px 0 #e9e1d6, 0 8px 18px rgba(0,0,0,.08);
-
-  /* Zacken: doppelte conic-gradient-Masken (breit unterstützt) */
-  --s:12px;   /* Zackenbreite */
-  --d:10px;   /* Zackenhöhe (Tiefe) */
-
+/* Aufreiß-Streifen (ECHTES Element – keine masks) */
+.rip{
+  position:absolute;left:14px;right:14px;top:calc(28% - 14px);height:32px;
+  z-index:10;pointer-events:none;
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    radial-gradient(8px 8px at 8px 100%, #0000 98%, #e9e1d6 100%) 0 0/24px 16px repeat-x; /* Schatten unter Zacken */
+  border:1px solid #eee; border-radius:6px; border-top-left-radius:0; border-top-right-radius:0;
+  box-shadow:0 8px 18px rgba(0,0,0,.08);
+  /* Zacken via background-clip */
   -webkit-mask:
-    conic-gradient(from -.25turn at left var(--d) bottom var(--d), #000 90deg, #0000 0) 0 100%/calc(2*var(--s)) var(--s) repeat-x,
-    conic-gradient(from  .25turn at left var(--d) bottom var(--d), #000 90deg, #0000 0) var(--s) 100%/calc(2*var(--s)) var(--s) repeat-x,
-    linear-gradient(#000 0 0);
+    linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat,
+    repeating-linear-gradient(90deg, #000 0 12px, #0000 0 24px) bottom/100% 12px no-repeat;
   mask:
-    conic-gradient(from -.25turn at left var(--d) bottom var(--d), #000 90deg, #0000 0) 0 100%/calc(2*var(--s)) var(--s) repeat-x,
-    conic-gradient(from  .25turn at left var(--d) bottom var(--d), #000 90deg, #0000 0) var(--s) 100%/calc(2*var(--s)) var(--s) repeat-x,
-    linear-gradient(#000 0 0);
+    linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat,
+    repeating-linear-gradient(90deg, #000 0 12px, #0000 0 24px) bottom/100% 12px no-repeat;
 
   transform-origin:left center;
   transform:scaleX(0);
   opacity:0;
 }
 
-/* Öffnen: Klappe klappt weg, Brief fährt hoch, Aufreißen "zieht" von links nach rechts */
+/* Öffnen */
 .envelope.opened .flap{
   transform:rotateX(180deg);
   box-shadow:0 2px 8px rgba(0,0,0,.04);
-  animation:flap-wiggle .45s ease .05s 1; /* kleines Zucken */
+  animation:flap-wiggle .45s ease .04s 1;
 }
 .envelope.opened .letter{
   transform:translateY(-26%);
   box-shadow:0 10px 26px rgba(0,0,0,.10);
 }
-.envelope.opened::after{
+.envelope.opened .rip{
   opacity:1;
-  animation:tear-reveal .7s cubic-bezier(.2,.7,.15,1) .05s both;
+  animation:tear-reveal .7s cubic-bezier(.2,.7,.15,1) .04s both;
 }
-
-/* sanfter Pop des ganzen Kuverts */
 .envelope.opened{animation:env-pop .45s ease both}
-@keyframes env-pop{
-  0%{transform:scale(1)}
-  60%{transform:scale(1.02)}
-  100%{transform:scale(1.004)}
-}
 
-/* "Reißbewegung": unregelmäßiges Voranschreiten (leichtes Zittern) */
-@keyframes tear-reveal{
-  0%   {transform:scaleX(0)}
-  8%   {transform:scaleX(.12) translateX(1px)}
-  16%  {transform:scaleX(.22) translateX(-1px)}
-  28%  {transform:scaleX(.36) translateX(.5px)}
-  42%  {transform:scaleX(.55) translateX(-.5px)}
-  60%  {transform:scaleX(.74)}
-  78%  {transform:scaleX(.88)}
-  100% {transform:scaleX(1)}
-}
-
-/* kleines Zucken der Klappe beim Anreißen */
+/* Keyframes */
+@keyframes env-pop{0%{transform:scale(1)}60%{transform:scale(1.02)}100%{transform:scale(1.004)}}
 @keyframes flap-wiggle{
-  0%{transform:rotateX(0deg)}
-  18%{transform:rotateX(12deg)}
-  35%{transform:rotateX(6deg)}
-  100%{transform:rotateX(180deg)}
+  0%{transform:rotateX(0deg)} 18%{transform:rotateX(12deg)}
+  35%{transform:rotateX(6deg)} 100%{transform:rotateX(180deg)}
+}
+@keyframes tear-reveal{
+  0%{transform:scaleX(0)}
+  12%{transform:scaleX(.18) translateX(1px)}
+  28%{transform:scaleX(.36) translateX(-1px)}
+  46%{transform:scaleX(.58)}
+  72%{transform:scaleX(.82)}
+  100%{transform:scaleX(1)}
 }
 
-/* ============ Slider ============ */
-.slider{
-  margin-top:24px;background:var(--card);border:1px solid #eee;border-radius:8px;
-  box-shadow:0 8px 30px rgba(0,0,0,.08);overflow:hidden
-}
+/* ===== Slider ===== */
+.slider{margin-top:24px;background:var(--card);border:1px solid #eee;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.08);overflow:hidden}
 .slide{display:none;padding:0}
 .slide.active{display:block}
 .slide img{width:100%;height:auto;display:block}
-
-.slider-controls{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 14px;border-top:1px solid #eee
-}
-.btn{
-  border:1px solid #ddd;background:#fff;padding:10px 14px;border-radius:6px;cursor:pointer;
-  transition:box-shadow .2s ease, transform .05s ease
-}
+.slider-controls{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-top:1px solid #eee}
+.btn{border:1px solid #ddd;background:#fff;padding:10px 14px;border-radius:6px;cursor:pointer;transition:box-shadow .2s ease, transform .05s ease}
 .btn:hover{box-shadow:0 4px 14px rgba(0,0,0,.08)}
 .btn:active{transform:translateY(1px)}
 .btn.primary{border-color:var(--accent);color:#fff;background:var(--accent)}
 .badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#f6efe4;border:1px solid #ecdcc3;color:#6d5a38;font-size:12px}
 
-/* ============ Formular ============ */
+/* ===== Form ===== */
 .form-card{padding:18px}
 .form-grid{display:grid;gap:12px}
 label{font-size:14px;color:#333}
-input[type="text"],input[type="number"],textarea,select{
-  width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:16px
-}
+input[type="text"],input[type="number"],textarea,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:16px}
 .hint{font-size:12px;color:var(--muted)}
 .footer-note{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 12px}
 
-/* ============ Accessibility ============ */
+/* ===== A11y ===== */
 @media (prefers-reduced-motion:reduce){
-  .envelope, .flap, .letter, .envelope::after{transition:none!important;animation:none!important}
+  .envelope, .flap, .letter, .rip{transition:none!important;animation:none!important}
 }
-.envelope.opened .open-label { display: none !important; }
