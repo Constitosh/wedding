@@ -73,3 +73,36 @@ form?.addEventListener("submit", async (e) => {
     console.error(err);
   }
 });
+
+(() => {
+  const envelope = document.getElementById("envelope");
+  const slider = document.getElementById("slider");
+  const wrap = document.querySelector(".envelope-wrap");
+
+  if (!envelope || !slider || !wrap) return;
+
+  const TOTAL_ANIM_MS = 2700; // muss >= Summe der CSS-Animationen sein
+
+  envelope.addEventListener("click", () => {
+    // Schon geöffnet/öffnend? -> ignorieren
+    if (envelope.classList.contains("opening") || envelope.classList.contains("opened")) return;
+
+    // Animation starten
+    envelope.classList.add("opening");
+
+    // Nach Ablauf: zum Slider wechseln
+    window.setTimeout(() => {
+      envelope.classList.remove("opening");
+      envelope.classList.add("opened");
+      // Envelope ausblenden, Slider zeigen
+      wrap.classList.add("hidden");
+      slider.classList.remove("hidden");
+
+      // Falls du showSlide(0) hast:
+      if (typeof showSlide === "function") {
+        try { showSlide(0); } catch {}
+      }
+    }, TOTAL_ANIM_MS);
+  });
+})();
+
