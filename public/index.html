@@ -18,11 +18,17 @@
 <div class="envelope-wrap">
   <div id="envelope" class="envelope" role="button" aria-label="Einladung öffnen" tabindex="0">
     <div class="pocket" aria-hidden="true"></div>
-    <div class="flap" aria-hidden="true"></div>
+    <div class="flap" aria-hidden="true">
+      <div class="flap-falz"></div>
+    </div>
 
-    <!-- Der sichtbare Aufreiß-Streifen (ECHTES Element, kein ::after) -->
-    <div class="rip" aria-hidden="true"></div>
+    <!-- Aufreiß-Streifen -->
+    <div class="rip" aria-hidden="true">
+      <div class="rip-zacken"></div>
+      <div class="rip-glow"></div>
+    </div>
 
+    <!-- Brief -->
     <div class="letter" aria-hidden="true">
       <div class="seal-line"></div>
     </div>
@@ -30,6 +36,7 @@
     <div id="open-label" class="open-label">Kuvert öffnen</div>
   </div>
 </div>
+
 
 
 
