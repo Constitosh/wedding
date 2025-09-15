@@ -9,103 +9,118 @@ body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,
 .header{text-align:center;margin:24px 0 12px;letter-spacing:.03em}
 .hidden{display:none!important}
 
-/* ===== Envelope ===== */
+/* ===== Envelope Intro Animation ===== */
 .envelope-wrap{display:grid;place-items:center;margin-top:24px;perspective:1000px}
 .envelope{
   width:360px;height:240px;position:relative;cursor:pointer;
-  transform-style:preserve-3d;transition:transform .35s ease;
+  transform-style:preserve-3d;transition:transform .25s ease;
 }
 .envelope:hover{transform:translateY(-2px)}
-.open-label{
-  position:absolute;inset:0;display:grid;place-items:center;
-  font-size:18px;color:var(--muted);z-index:20;user-select:none
-}
-.envelope.opened .open-label{display:none!important}
+.open-label{position:absolute;inset:0;display:grid;place-items:center;font-size:18px;color:#7a7a7a;z-index:20;user-select:none}
+.envelope.opening .open-label,
+.envelope.opened .open-label{display:none}
 
-/* Tasche */
+/* Tasche (Körper) */
 .pocket{
-  position:absolute;inset:0;background:#fff;border:1px solid #eee;border-radius:8px;
+  position:absolute;inset:0;background:#fff;border:1px solid #eee;border-radius:10px;
   box-shadow:0 10px 30px rgba(0,0,0,.14);z-index:1;
 }
 
-/* Klappe (dreieck) */
+/* Klappe (dreieck) mit Falzlinie */
 .flap{
-  position:absolute;left:0;right:0;top:0;height:56%;
+  position:absolute;left:0;right:0;top:0;height:58%;
   transform-origin:top center;transform:rotateX(0deg);
-  transition:transform .65s cubic-bezier(.2,.6,.15,1);
-  z-index:6;
-  background:#fff;border:1px solid #eee;border-bottom:none;border-top-left-radius:8px;border-top-right-radius:8px;
-  clip-path:polygon(50% 0%,100% 100%,0% 100%);
-  box-shadow:0 8px 18px rgba(0,0,0,.06);
+  z-index:6;background:#fff;border:1px solid #eee;border-bottom:none;
+  border-top-left-radius:10px;border-top-right-radius:10px;
+  clip-path:polygon(50% 0%,100% 100%,0% 100%);box-shadow:0 8px 18px rgba(0,0,0,.06);
 }
-.flap::after{ /* Falzlinie */
-  content:"";position:absolute;left:12%;right:12%;bottom:18%;
-  height:2px;background:linear-gradient(to right,transparent,#e9e1d6,transparent);opacity:.85
-}
+.flap-falz{position:absolute;left:12%;right:12%;bottom:18%;height:2px;background:linear-gradient(to right,transparent,#e9e1d6,transparent);opacity:.85}
 
 /* Brief */
 .letter{
-  position:absolute;left:14px;right:14px;bottom:10px;top:28%;
-  background:#fffdfa;border:1px solid #eee3cf;border-radius:6px;
+  position:absolute;left:14px;right:14px;bottom:10px;top:30%;
+  background:#fffdfa;border:1px solid #eee3cf;border-radius:8px;
   box-shadow:0 6px 16px rgba(0,0,0,.07);
-  transform:translateY(24%);
-  transition:transform .9s cubic-bezier(.2,.6,.15,1) .18s, box-shadow .3s ease .18s;
-  z-index:2;
+  transform:translateY(26%);z-index:2;
 }
 .seal-line{position:absolute;left:0;right:0;top:24px;height:2px;background:linear-gradient(to right,transparent,#f0e6d8,transparent)}
 
-/* Aufreiß-Streifen (ECHTES Element – keine masks) */
+/* Aufreiß-Streifen (sichtbares Element, keine Pseudo-Elemente nötig) */
 .rip{
-  position:absolute;left:14px;right:14px;top:calc(28% - 14px);height:32px;
-  z-index:10;pointer-events:none;
-  background:
-    linear-gradient(#fff,#fff) padding-box,
-    radial-gradient(8px 8px at 8px 100%, #0000 98%, #e9e1d6 100%) 0 0/24px 16px repeat-x; /* Schatten unter Zacken */
-  border:1px solid #eee; border-radius:6px; border-top-left-radius:0; border-top-right-radius:0;
+  position:absolute;left:14px;right:14px;top:calc(30% - 16px);height:34px;z-index:10;pointer-events:none;
+  opacity:0;transform:scaleX(0);transform-origin:left center;
+  /* Papierfläche */
+  background:#fff;border:1px solid #eee;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:8px;border-bottom-right-radius:8px;
   box-shadow:0 8px 18px rgba(0,0,0,.08);
-  /* Zacken via background-clip */
-  -webkit-mask:
-    linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat,
-    repeating-linear-gradient(90deg, #000 0 12px, #0000 0 24px) bottom/100% 12px no-repeat;
-  mask:
-    linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat,
-    repeating-linear-gradient(90deg, #000 0 12px, #0000 0 24px) bottom/100% 12px no-repeat;
-
-  transform-origin:left center;
-  transform:scaleX(0);
+}
+.rip-zacken{
+  position:absolute;left:0;right:0;bottom:-1px;height:12px;
+  background:
+    /* Zacken-Maske: 12px Zähne, 24px Periode */
+    repeating-linear-gradient(90deg, #000 0 12px, #0000 0 24px);
+  -webkit-mask:linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0);
+  filter:drop-shadow(0 2px 0 #e9e1d6);
+}
+.rip-glow{
+  position:absolute;inset:-6px;pointer-events:none;border-radius:10px;
+  background:radial-gradient(120px 40px at 20% 50%, rgba(255,208,120,.35), transparent 60%),
+             radial-gradient(120px 40px at 60% 50%, rgba(255,240,180,.25), transparent 70%);
   opacity:0;
 }
 
-/* Öffnen */
-.envelope.opened .flap{
-  transform:rotateX(180deg);
-  box-shadow:0 2px 8px rgba(0,0,0,.04);
-  animation:flap-wiggle .45s ease .04s 1;
+/* ===== Zustände (wird per JS gesetzt) ===== */
+:root{
+  /* Zeiten in ms – bitte bei JS-Timeout beachten */
+  --t-tear: 700ms;          /* Aufreißen */
+  --t-flap: 900ms;          /* Klappe klappt auf */
+  --t-letter: 800ms;        /* Brief fährt raus */
+  --t-gap: 150ms;           /* kleine Verzögerungen */
 }
-.envelope.opened .letter{
-  transform:translateY(-26%);
-  box-shadow:0 10px 26px rgba(0,0,0,.10);
-}
-.envelope.opened .rip{
-  opacity:1;
-  animation:tear-reveal .7s cubic-bezier(.2,.7,.15,1) .04s both;
-}
-.envelope.opened{animation:env-pop .45s ease both}
 
-/* Keyframes */
-@keyframes env-pop{0%{transform:scale(1)}60%{transform:scale(1.02)}100%{transform:scale(1.004)}}
-@keyframes flap-wiggle{
-  0%{transform:rotateX(0deg)} 18%{transform:rotateX(12deg)}
-  35%{transform:rotateX(6deg)} 100%{transform:rotateX(180deg)}
+.envelope.opening .rip{
+  animation:rip-reveal var(--t-tear) cubic-bezier(.2,.7,.15,1) forwards;
 }
-@keyframes tear-reveal{
-  0%{transform:scaleX(0)}
-  12%{transform:scaleX(.18) translateX(1px)}
-  28%{transform:scaleX(.36) translateX(-1px)}
-  46%{transform:scaleX(.58)}
-  72%{transform:scaleX(.82)}
+.envelope.opening .rip-glow{
+  animation:rip-glow var(--t-tear) ease forwards;
+}
+.envelope.opening .flap{
+  animation:flap-open var(--t-flap) cubic-bezier(.2,.7,.1,1) calc(var(--t-tear) - 200ms) forwards;
+}
+.envelope.opening .letter{
+  animation:letter-out var(--t-letter) cubic-bezier(.2,.7,.1,1) calc(var(--t-tear) + var(--t-gap)) forwards;
+}
+.envelope.opening{animation:env-pop 420ms ease both}
+
+/* ===== Keyframes ===== */
+@keyframes rip-reveal{
+  0%{opacity:0;transform:scaleX(0)}
+  8%{opacity:1}
+  30%{transform:scaleX(.35) translateX(1px)}
+  55%{transform:scaleX(.7) translateX(-1px)}
   100%{transform:scaleX(1)}
 }
+@keyframes rip-glow{
+  0%{opacity:0} 30%{opacity:.7} 100%{opacity:.15}
+}
+@keyframes flap-open{
+  0%{transform:rotateX(0deg)}
+  18%{transform:rotateX(12deg)}
+  100%{transform:rotateX(168deg)}
+}
+@keyframes letter-out{
+  0%{transform:translateY(26%)}
+  100%{transform:translateY(-22%)}
+}
+@keyframes env-pop{
+  0%{transform:scale(1)}60%{transform:scale(1.02)}100%{transform:scale(1.006)}
+}
+
+/* Motion-Reduce */
+@media (prefers-reduced-motion:reduce){
+  .envelope,.flap,.rip,.letter{animation:none!important;transition:none!important}
+}
+
 
 /* ===== Slider ===== */
 .slider{margin-top:24px;background:var(--card);border:1px solid #eee;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.08);overflow:hidden}
