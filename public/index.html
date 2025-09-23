@@ -4,103 +4,322 @@
   <meta charset="utf-8">
   <title>It's about US</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="/styles.css" rel="stylesheet">
   <meta name="description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
+  <style>
+    /* ----- Layout: lock to viewport height ----- */
+    :root { --header-pad: 16px; --content-pad: 16px; --accent: #b08d57; --muted:#7a7a7a; }
+    * { box-sizing: border-box; }
+    html, body { height: 100svh; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      color: #2b2b2b;
+      background: #faf7f2;
+      overflow: hidden; /* no page scroll; internal panes handle it */
+    }
+    .page {
+      height: 100svh; /* full safe viewport */
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      padding: var(--header-pad) var(--content-pad) 8px;
+      text-align: center;
+    }
+    .header h1 { margin: 0 0 6px; font-weight: 700; }
+    .hint { color: var(--muted); font-size: 14px; }
+
+    /* Main content area uses remaining height and may scroll internally */
+    .content {
+      flex: 1;
+      min-height: 0;            /* allow child overflow auto to work in flex */
+      padding: 0 var(--content-pad) var(--content-pad);
+      display: grid;
+      grid-template-rows: 1fr;  /* a single row that can stretch */
+      place-items: center;
+      overflow: hidden;         /* prevent page scroll */
+    }
+
+    .hidden { display: none !important; }
+
+    /* ===== Envelope (fits within content area) ===== */
+    .envelope-wrap {
+      height: 100%;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+    .envelope {
+      width: min(90vw, 420px);
+      aspect-ratio: 3/2; /* scales responsively while keeping shape */
+      position: relative;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform .25s ease;
+    }
+    .envelope:hover { transform: translateY(-2px); }
+    .open-label {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      font-size: 18px; color: var(--muted); z-index: 20; user-select: none;
+    }
+    .envelope.opening .open-label, .envelope.opened .open-label { display: none; }
+
+    .pocket {
+      position: absolute; inset: 0;
+      background:#fff; border:1px solid #eee; border-radius:10px;
+      box-shadow:0 10px 30px rgba(0,0,0,.14); z-index:1;
+    }
+    .flap {
+      position: absolute; left:0; right:0; top:0; height:58%;
+      transform-origin: top center; transform: rotateX(0deg);
+      z-index:6; background:#fff; border:1px solid #eee; border-bottom:none;
+      border-top-left-radius:10px; border-top-right-radius:10px;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+      box-shadow:0 8px 18px rgba(0,0,0,.06);
+    }
+    .flap-falz {
+      position:absolute; left:12%; right:12%; bottom:18%; height:2px;
+      background: linear-gradient(to right, transparent, #e9e1d6, transparent); opacity:.85;
+    }
+    .letter {
+      position:absolute; left:4%; right:4%; bottom:4%; top:30%;
+      background:#fffdfa; border:1px solid #eee3cf; border-radius:8px;
+      box-shadow:0 6px 16px rgba(0,0,0,.07); transform: translateY(26%); z-index:2;
+    }
+    .seal-line {
+      position:absolute; left:0; right:0; top:24px; height:2px;
+      background: linear-gradient(to right, transparent, #f0e6d8, transparent);
+    }
+    .rip {
+      position:absolute; left:4%; right:4%; top: calc(30% - 16px); height:34px; z-index:10; pointer-events:none;
+      opacity:0; transform: scaleX(0); transform-origin: left center;
+      background:#fff; border:1px solid #eee; border-top-left-radius:0; border-top-right-radius:0; border-bottom-left-radius:8px; border-bottom-right-radius:8px;
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
+    }
+    .rip-zacken {
+      position:absolute; left:0; right:0; bottom:-1px; height:12px;
+      background: repeating-linear-gradient(90deg, #000 0 12px, #0000 0 24px);
+      -webkit-mask: linear-gradient(#000 0 0);
+      mask: linear-gradient(#000 0 0);
+      filter: drop-shadow(0 2px 0 #e9e1d6);
+    }
+    .rip-glow {
+      position:absolute; inset:-6px; pointer-events:none; border-radius:10px;
+      background:
+        radial-gradient(120px 40px at 20% 50%, rgba(255,208,120,.35), transparent 60%),
+        radial-gradient(120px 40px at 60% 50%, rgba(255,240,180,.25), transparent 70%);
+      opacity:0;
+    }
+
+    :root { --t-tear:700ms; --t-flap:900ms; --t-letter:800ms; --t-gap:150ms; }
+    .envelope.opening { animation: env-pop 420ms ease both; }
+    .envelope.opening .rip { animation: rip-reveal var(--t-tear) cubic-bezier(.2,.7,.15,1) forwards; }
+    .envelope.opening .rip-glow { animation: rip-glow var(--t-tear) ease forwards; }
+    .envelope.opening .flap { animation: flap-open var(--t-flap) cubic-bezier(.2,.7,.1,1) calc(var(--t-tear) - 200ms) forwards; }
+    .envelope.opening .letter { animation: letter-out var(--t-letter) cubic-bezier(.2,.7,.1,1) calc(var(--t-tear) + var(--t-gap)) forwards; }
+
+    @keyframes rip-reveal {
+      0%{opacity:0;transform:scaleX(0)}
+      8%{opacity:1}
+      30%{transform:scaleX(.35) translateX(1px)}
+      55%{transform:scaleX(.7) translateX(-1px)}
+      100%{transform:scaleX(1)}
+    }
+    @keyframes rip-glow { 0%{opacity:0} 30%{opacity:.7} 100%{opacity:.15} }
+    @keyframes flap-open { 0%{transform:rotateX(0)} 18%{transform:rotateX(12deg)} 100%{transform:rotateX(168deg)} }
+    @keyframes letter-out { 0%{transform:translateY(26%)} 100%{transform:translateY(-22%)} }
+    @keyframes env-pop { 0%{transform:scale(1)} 60%{transform:scale(1.02)} 100%{transform:scale(1.006)} }
+
+    @media (prefers-reduced-motion: reduce) {
+      .envelope, .flap, .rip, .letter { animation: none !important; transition: none !important; }
+    }
+
+    /* ===== Slider fits in content height ===== */
+    .slider {
+      height: 100%;
+      width: 100%;
+      max-width: 900px;
+      display: grid;
+      grid-template-rows: 1fr auto; /* image area + controls */
+      background:#fff; border:1px solid #eee; border-radius: 10px;
+      box-shadow:0 8px 30px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .slide { display:none; height: 100%; }
+    .slide.active { display:block; }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;     /* keep full image visible */
+      background: #fff;        /* avoid transparency gaps */
+      display: block;
+    }
+    .slider-controls {
+      display:flex; justify-content:space-between; align-items:center;
+      padding: 10px 12px; border-top:1px solid #eee; background:#fff;
+    }
+    .btn {
+      border:1px solid #ddd; background:#fff; padding:10px 14px; border-radius:6px; cursor:pointer;
+      transition: box-shadow .2s ease, transform .05s ease;
+    }
+    .btn:hover { box-shadow:0 4px 14px rgba(0,0,0,.08); }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { border-color: var(--accent); color:#fff; background: var(--accent); }
+    .badge { display:inline-block; padding:4px 10px; border-radius:999px; background:#f6efe4; border:1px solid #ecdcc3; color:#6d5a38; font-size:12px; }
+
+    /* ===== Form also fits 100% height, internal scroll if long ===== */
+    .form-card {
+      height: 100%;
+      width: 100%;
+      max-width: 900px;
+      display: grid;
+      grid-template-rows: auto 1fr auto; /* header, form (scroll), footer */
+      background:#fff; border:1px solid #eee; border-radius:10px;
+      box-shadow:0 8px 30px rgba(0,0,0,.08);
+      overflow: hidden;
+      padding: 0;
+    }
+    .form-card > h2, .form-card > p { margin: 12px 16px 0; }
+    .form-grid {
+      margin: 12px 16px;
+      display: grid; gap: 12px;
+      overflow: auto; /* internal scrolling if needed */
+      min-height: 0;  /* allow scrolling in grid child */
+    }
+    label { font-size: 14px; color: #333; }
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%; padding:10px 12px; border:1px solid #ddd; border-radius:6px; background:#fff; font-size:16px;
+    }
+    .footer-note { text-align:center; color:#777; font-size:12px; margin: 10px 0 14px; }
+  </style>
 </head>
 <body>
-  <div class="container">
+  <div class="page">
     <div class="header">
       <h1>💌 It's about US</h1>
-      <div class="hint">Ursula & Sylvester heiraten. Klicke auf das Kuvert um deine Einladung zu öffnen.</div>
+      <div class="hint">Ursula &amp; Sylvester heiraten. Klicke auf das Kuvert, um deine Einladung zu öffnen.</div>
     </div>
 
-<!-- Kuvert -->
-<div class="envelope-wrap">
-  <div id="envelope" class="envelope" role="button" aria-label="Einladung öffnen" tabindex="0">
-    <div class="pocket" aria-hidden="true"></div>
-    <div class="flap" aria-hidden="true">
-      <div class="flap-falz"></div>
-    </div>
+    <div class="content">
+      <!-- Envelope -->
+      <div class="envelope-wrap">
+        <div id="envelope" class="envelope" role="button" aria-label="Einladung öffnen" tabindex="0">
+          <div class="pocket" aria-hidden="true"></div>
+          <div class="flap" aria-hidden="true"><div class="flap-falz"></div></div>
+          <div class="rip" aria-hidden="true"><div class="rip-zacken"></div><div class="rip-glow"></div></div>
+          <div class="letter" aria-hidden="true"><div class="seal-line"></div></div>
+          <div id="open-label" class="open-label">Kuvert öffnen</div>
+        </div>
+      </div>
 
-    <!-- Aufreiß-Streifen -->
-    <div class="rip" aria-hidden="true">
-      <div class="rip-zacken"></div>
-      <div class="rip-glow"></div>
-    </div>
+      <!-- Slider -->
+      <div id="slider" class="slider hidden" aria-live="polite">
+        <div class="slide active"><img src="https://savethedate.thefakerug.com/wedding/1.png" alt="Einladung – Seite 1"></div>
+        <div class="slide"><img src="https://savethedate.thefakerug.com/wedding/2.png" alt="Einladung – Seite 2"></div>
+        <div class="slide"><img src="https://savethedate.thefakerug.com/wedding/3.png" alt="Einladung – Seite 3"></div>
+        <div class="slider-controls">
+          <button id="prev" class="btn" disabled>← Zurück</button>
+          <span id="step-badge" class="badge">Seite 1 von 3</span>
+          <button id="next" class="btn primary">Weiter →</button>
+        </div>
+      </div>
 
-    <!-- Brief -->
-    <div class="letter" aria-hidden="true">
-      <div class="seal-line"></div>
-    </div>
-
-    <div id="open-label" class="open-label">Kuvert öffnen</div>
-  </div>
-</div>
-
-
-
-
-    <!-- Slider -->
-    <div id="slider" class="slider hidden" aria-live="polite">
-      <!-- Postkarten als Bilder (ersetze die Pfade in /public/assets/) -->
-      <div class="slide active"><img src="https://savethedate.thefakerug.com/wedding/1.png" alt="Einladung – Seite 1"></div>
-      <div class="slide"><img src="https://savethedate.thefakerug.com/wedding/2.png" alt="Einladung – Seite 2"></div>
-      <div class="slide"><img src="https://savethedate.thefakerug.com/wedding/3.png" alt="Einladung – Seite 3"></div>
-      <!-- Optional: vierte Seite -->
-      <!-- <div class="slide"><img src="/assets/invite4.jpg" alt="Einladung – Seite 4"></div> -->
-
-      <div class="slider-controls">
-        <button id="prev" class="btn" disabled>← Zurück</button>
-        <span id="step-badge" class="badge">Seite 1 von 3</span>
-        <button id="next" class="btn primary">Weiter →</button>
+      <!-- Form -->
+      <div id="rsvp-form-card" class="form-card hidden">
+        <h2>Um deine Antwort wird gebeten.</h2>
+        <p class="hint" style="margin-top:4px;">Bitte fülle das Formular aus und gib an, wen du mitbringst.</p>
+        <form id="rsvp-form" class="form-grid">
+          <div>
+            <label for="name">Dein Name *</label>
+            <input id="name" name="name" type="text" required placeholder="Vor- und Nachname">
+          </div>
+          <div>
+            <label for="guests">Begleitperson</label>
+            <input id="guests" name="guests" type="text" placeholder="z.B. Maria Muster, Max Muster">
+          </div>
+          <div>
+            <label for="kidsCount">Kinder (Anzahl)</label>
+            <input id="kidsCount" name="kidsCount" type="number" min="0" step="1" placeholder="0">
+          </div>
+          <div>
+            <label for="attendance">Teilnahme *</label>
+            <select id="attendance" name="attendance" required>
+              <option value="" selected disabled>Bitte wähle…</option>
+              <option value="wir_kommen">✅ Wir kommen zur Hochzeit</option>
+              <option value="wir_kommen_am_freitag">✅✅ Wir kommen schon am Freitag</option>
+              <option value="wir_kommen_nicht">❌ Leider können wir nicht kommen</option>
+            </select>
+          </div>
+          <div>
+            <label for="notes">Anmerkungen (optional)</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Fragen, Besonderheiten …"></textarea>
+          </div>
+          <div>
+            <button class="btn primary" type="submit">Senden</button>
+          </div>
+          <div id="status" class="hint" aria-live="polite"></div>
+        </form>
+        <div class="footer-note">Danke für deine Rückmeldung! 💍</div>
       </div>
     </div>
-
-    <!-- Formular -->
-    <div id="rsvp-form-card" class="slider form-card hidden">
-      <h2>Um deine Antwort wird gebeten.</h2>
-      <p class="hint">Bitte fülle das Formular aus und gib an, wen du mitbringst</p>
-      <form id="rsvp-form" class="form-grid">
-        <div>
-          <label for="name">Dein Name *</label>
-          <input id="name" name="name" type="text" required placeholder="Vor- und Nachname">
-        </div>
-
-        <div>
-          <label for="guests">Begleitperson</label>
-          <input id="guests" name="guests" type="text" placeholder="z.B. Maria Muster, Max Muster">
-        </div>
-
-        <div>
-          <label for="kidsCount">Kinder (Anzahl)</label>
-          <input id="kidsCount" name="kidsCount" type="number" min="0" step="1" placeholder="0">
-        </div>
-
-        <div>
-          <label for="attendance">Teilnahme *</label>
-          <select id="attendance" name="attendance" required>
-            <option value="" selected disabled>Bitte wähle…</option>
-            <option value="wir_kommen">✅Wir kommen zur Hochzeit</option>
-            <option value="wir_kommen_am_freitag">✅✅Wir kommen schon am Freitag</option>
-            <option value="wir_kommen_nicht">❌Leider können wir nicht kommen</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="notes">Anmerkungen (optional)</label>
-          <textarea id="notes" name="notes" rows="3" placeholder="Fragen, Besonderheiten …"></textarea>
-        </div>
-
-        <div>
-          <button class="btn primary" type="submit">Senden</button>
-        </div>
-
-        <div id="status" class="hint" aria-live="polite"></div>
-      </form>
-      <div class="footer-note">Danke für deine Rückmeldung! 💍</div>
-    </div>
   </div>
 
-  <script src="/app.js" defer></script>
+  <script>
+    // ---- Slider logic (unchanged, but height-safe)
+    const slider = document.getElementById("slider");
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const prevBtn = document.getElementById("prev");
+    const nextBtn = document.getElementById("next");
+    const stepBadge = document.getElementById("step-badge");
+
+    let idx = 0;
+    function updateStepBadge() {
+      const totalSlides = slides.length;
+      stepBadge.textContent = `Seite ${Math.min(idx+1, totalSlides)} von ${totalSlides}`;
+    }
+    function showSlide(i) {
+      slides.forEach((s, n) => s.classList.toggle("active", n === i));
+      updateStepBadge();
+      prevBtn.disabled = i === 0;
+      nextBtn.textContent = i === slides.length - 1 ? "Zum Formular" : "Weiter →";
+    }
+    prevBtn?.addEventListener("click", () => { if (idx > 0) { idx--; showSlide(idx); } });
+    nextBtn?.addEventListener("click", () => {
+      if (idx < slides.length - 1) { idx++; showSlide(idx); }
+      else {
+        document.getElementById("rsvp-form-card").classList.remove("hidden");
+        slider.classList.add("hidden");
+        document.getElementById("name")?.focus();
+      }
+    });
+
+    // ---- Envelope animation then show slider
+    (function(){
+      const envelope = document.getElementById("envelope");
+      const wrap = document.querySelector(".envelope-wrap");
+      if (!envelope || !wrap || !slider) return;
+
+      const TOTAL_ANIM_MS = 2700; // must cover CSS animations
+
+      envelope.addEventListener("click", () => {
+        if (envelope.classList.contains("opening") || envelope.classList.contains("opened")) return;
+        envelope.classList.add("opening");
+
+        setTimeout(() => {
+          envelope.classList.remove("opening");
+          envelope.classList.add("opened");
+          wrap.classList.add("hidden");
+          slider.classList.remove("hidden");
+          showSlide(0);
+        }, TOTAL_ANIM_MS);
+      });
+    })();
+
+    // Ensure first badge is correct on load
+    updateStepBadge();
+  </script>
 </body>
 </html>
