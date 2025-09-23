@@ -1,40 +1,158 @@
-<!doctype html> <html lang="de"> <head> 
+<!doctype html>
+<html lang="de">
+<head>
   <!-- Open Graph (für WhatsApp, Facebook, LinkedIn etc.) -->
-<meta property="og:title" content="It's about US">
-<meta property="og:description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
-<meta property="og:image" content="https://wedding.thefakerug.com/assets/preview.png">
-<meta property="og:url" content="https://wedding.thefakerug.com/">
-<meta property="og:type" content="website">
+  <meta property="og:title" content="It's about US">
+  <meta property="og:description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
+  <meta property="og:image" content="https://savethedate.thefakerug.com/wedding/us.png">
+  <meta property="og:url" content="https://wedding.thefakerug.com/">
+  <meta property="og:type" content="website">
 
-<!-- Twitter Cards (für Twitter/X) -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="It's about US">
-<meta name="twitter:description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
-<meta name="twitter:image" content="https://wedding.thefakerug.com/assets/preview.png">
+  <!-- Twitter Cards (für Twitter/X) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="It's about US">
+  <meta name="twitter:description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
+  <meta name="twitter:image" content="https://savethedate.thefakerug.com/wedding/us.png">
 
-  
-  
-  <meta charset="utf-8"> <title>It's about US</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <link href="/styles.css" rel="stylesheet"> <meta name="description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen."> </head> <body> <div class="container"> <div class="header"> <h1>💌 It's about US</h1> <div class="hint">Ursula & Sylvester heiraten. Klicke auf das Kuvert um deine Einladung zu öffnen.</div> </div> <!-- Kuvert --> <div class="envelope-wrap"> <div id="envelope" class="envelope" role="button" aria-label="Einladung öffnen" tabindex="0"> <div class="pocket" aria-hidden="true"></div> <div class="flap" aria-hidden="true"> <div class="flap-falz"></div> </div> <!-- Aufreiß-Streifen --> <div class="rip" aria-hidden="true"> <div class="rip-zacken"></div> <div class="rip-glow"></div> </div> <!-- Brief --> <div class="letter" aria-hidden="true"> <div class="seal-line"></div> </div> <div id="open-label" class="open-label">Kuvert öffnen</div> </div> </div> <!-- Slider --> <div id="slider" class="slider hidden" aria-live="polite"> <!-- Postkarten als Bilder (ersetze die Pfade in /public/assets/) --> <div class="slide active">
-  <img
-    src="https://savethedate.thefakerug.com/wedding/1.png"
-    alt="Einladung – Seite 1"
-    style="display:block; margin:0 auto; max-width:100%; height:auto; max-height:70vh; object-fit:contain;"
-  >
-</div>
+  <meta charset="utf-8">
+  <title>It's about US</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/styles.css" rel="stylesheet">
+  <meta name="description" content="Unsere Hochzeitseinladung – bitte bis zum Ende durchklicken und zusagen/absagen.">
 
-<div class="slide">
-  <img
-    src="https://savethedate.thefakerug.com/wedding/2.png"
-    alt="Einladung – Seite 2"
-    style="display:block; margin:0 auto; max-width:100%; height:auto; max-height:70vh; object-fit:contain;"
-  >
-</div>
+  <!-- Tiny tweak so controls look correct on top -->
+  <style>
+    .slider-controls {
+      border-top: 0 !important;
+      border-bottom: 1px solid #eee !important;
+      position: sticky; top: 0; background:#fff; z-index:2; /* optional 'sticky' */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💌 It's about US</h1>
+      <div class="hint"><b>Ursula & Sylvester heiraten.</b><br>Klicke auf das Kuvert um deine Einladung zu öffnen.</div>
+    </div>
 
-<div class="slide">
-  <img
-    src="https://savethedate.thefakerug.com/wedding/3.png"
-    alt="Einladung – Seite 3"
-    style="display:block; margin:0 auto; max-width:100%; height:auto; max-height:70vh; object-fit:contain;"
-  >
-</div>
- <!-- Optional: vierte Seite --> <!-- <div class="slide"><img src="/assets/invite4.jpg" alt="Einladung – Seite 4"></div> --> <div class="slider-controls"> <button id="prev" class="btn" disabled>← Zurück</button> <span id="step-badge" class="badge">Seite 1 von 3</span> <button id="next" class="btn primary">Weiter →</button> </div> </div> <!-- Formular --> <div id="rsvp-form-card" class="slider form-card hidden"> <h2>Um deine Antwort wird gebeten.</h2> <p class="hint">Bitte fülle das Formular aus und gib an, wen du mitbringst</p> <form id="rsvp-form" class="form-grid"> <div> <label for="name">Dein Name *</label> <input id="name" name="name" type="text" required placeholder="Vor- und Nachname"> </div> <div> <label for="guests">Begleitperson</label> <input id="guests" name="guests" type="text" placeholder="z.B. Maria Muster, Max Muster"> </div> <div> <label for="kidsCount">Kinder (Anzahl)</label> <input id="kidsCount" name="kidsCount" type="number" min="0" step="1" placeholder="0"> </div> <div> <label for="attendance">Teilnahme *</label> <select id="attendance" name="attendance" required> <option value="" selected disabled>Bitte wähle…</option> <option value="wir_kommen">✅Wir kommen zur Hochzeit</option> <option value="wir_kommen_am_freitag">✅✅Wir kommen schon am Freitag</option> <option value="wir_kommen_nicht">❌Leider können wir nicht kommen</option> </select> </div> <div> <label for="notes">Anmerkungen (optional)</label> <textarea id="notes" name="notes" rows="3" placeholder="Fragen, Besonderheiten …"></textarea> </div> <div> <button class="btn primary" type="submit">Senden</button> </div> <div id="status" class="hint" aria-live="polite"></div> </form> <div class="footer-note">Danke für deine Rückmeldung! 💍</div> </div> </div> <script src="/app.js" defer></script> </body> </html>
+    <!-- Kuvert -->
+    <div class="envelope-wrap">
+      <div id="envelope" class="envelope" role="button" aria-label="Einladung öffnen" tabindex="0">
+        <div class="pocket" aria-hidden="true"></div>
+        <div class="flap" aria-hidden="true">
+          <div class="flap-falz"></div>
+        </div>
+
+        <!-- Aufreiß-Streifen -->
+        <div class="rip" aria-hidden="true">
+          <div class="rip-zacken"></div>
+          <div class="rip-glow"></div>
+        </div>
+
+        <!-- Brief -->
+        <div class="letter" aria-hidden="true">
+          <div class="seal-line"></div>
+        </div>
+
+        <div id="open-label" class="open-label">Kuvert öffnen</div>
+      </div>
+    </div>
+
+    <!-- Slider (controls moved to TOP) -->
+    <div id="slider" class="slider hidden" aria-live="polite">
+
+      <!-- NAV CONTROLS ON TOP -->
+      <div class="slider-controls">
+        <button id="prev" class="btn" disabled>← Zurück</button>
+        <span id="step-badge" class="badge">Seite 1 von 3</span>
+        <button id="next" class="btn primary">Weiter →</button>
+      </div>
+
+      <!-- Slides -->
+      <div class="slide active">
+        <img
+          src="https://savethedate.thefakerug.com/wedding/1.png"
+          alt="Einladung – Seite 1"
+          style="display:block; margin:0 auto; max-width:100%; height:auto; max-height:70vh; object-fit:contain;"
+        >
+      </div>
+
+      <div class="slide">
+        <img
+          src="https://savethedate.thefakerug.com/wedding/2.png"
+          alt="Einladung – Seite 2"
+          style="display:block; margin:0 auto; max-width:100%; height:auto; max-height:70vh; object-fit:contain;"
+        >
+      </div>
+
+      <div class="slide">
+        <img
+          src="https://savethedate.thefakerug.com/wedding/3.png"
+          alt="Einladung – Seite 3"
+          style="display:block; margin:0 auto; max-width:100%; height:auto; max-height:70vh; object-fit:contain;"
+        >
+      </div>
+      <!-- Optional: vierte Seite -->
+      <!-- <div class="slide"><img src="/assets/invite4.jpg" alt="Einladung – Seite 4"></div> -->
+    </div>
+
+    <!-- Formular -->
+    <div id="rsvp-form-card" class="slider form-card hidden">
+      <h2>Um deine Antwort wird gebeten.</h2>
+      <p class="hint">Bitte gib an, wen du mitbringst</p>
+      <form id="rsvp-form" class="form-grid">
+        <div>
+          <label for="name">Dein Name *</label>
+          <input id="name" name="name" type="text" required placeholder="Vor- und Nachname">
+        </div>
+
+        <div>
+          <label for="guests">Begleitperson</label>
+          <input id="guests" name="guests" type="text" placeholder="z.B. Karl-Heinz, Hildegard,...">
+        </div>
+
+        <div>
+          <label for="kidsCount">Kinder (Anzahl)</label>
+          <input id="kidsCount" name="kidsCount" type="number" min="0" step="1" placeholder="0">
+        </div>
+
+        <div>
+          <label for="attendance">Teilnahme *</label>
+          <select id="attendance" name="attendance" required>
+            <option value="" selected disabled>Bitte wähle…</option>
+            <option value="wir_kommen">✅Wir kommen zur Hochzeit</option>
+            <option value="wir_kommen_am_freitag">✅✅Wir kommen schon am Freitag</option>
+            <option value="wir_kommen_nicht">❌Leider können wir nicht kommen</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="notes">Anmerkungen (optional)</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Fragen, Besonderheiten …"></textarea>
+        </div>
+
+        <div>
+          <button class="btn primary" type="submit">Senden</button>
+        </div>
+
+        <div id="status" class="hint" aria-live="polite"></div>
+      </form>
+      <div class="footer-note">Danke für deine Rückmeldung! 💍</div>
+    </div>
+  </div>
+
+  <script src="/app.js" defer></script>
+
+  <!-- One tiny helper to hide the header as soon as the envelope is clicked -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const env = document.getElementById('envelope');
+      const header = document.querySelector('.header');
+      if (env && header) {
+        env.addEventListener('click', () => header.classList.add('hidden'), { once: true });
+      }
+    });
+  </script>
+</body>
+</html>
