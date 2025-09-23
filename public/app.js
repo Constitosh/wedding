@@ -15,7 +15,7 @@ function showSlide(i) {
   slides.forEach((s, n) => s.classList.toggle("active", n === i));
   updateStepBadge();
   prevBtn.disabled = i === 0;
-  nextBtn.textContent = i === slides.length - 1 ? "Zum Formular" : "Weiter →";
+  nextBtn.textContent = i === slides.length - 1 ? "Zur Zu-/Absage" : "Weiter →";
 }
 envelope?.addEventListener("click", () => {
   envelope.classList.add("opened");
